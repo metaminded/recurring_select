@@ -74,18 +74,15 @@ window.RecurringSelectDialog =
 
     freqInit: ->
       @freq_select = @outer_holder.find ".rs_frequency"
-      if @current_rule.hash? && (rule_type = @current_rule.hash.rule_type)?
-        if rule_type.search(/Weekly/) != -1
-          @freq_select.prop('selectedIndex', 1)
-          @initWeeklyOptions()
-        else if rule_type.search(/Monthly/) != -1
-          @freq_select.prop('selectedIndex', 2)
-          @initMonthlyOptions()
-        else if rule_type.search(/Yearly/) != -1
-          @freq_select.prop('selectedIndex', 3)
-          @initYearlyOptions()
-        else
-          @initDailyOptions()
+      if !@current_rule.hash? || !(rule_type = @current_rule.hash.rule_type)?
+        @current_rule.hash ||= {}
+        @current_rule.hash.interval = 1
+        @current_rule.hash.until = null
+        @current_rule.hash.count = null
+        @current_rule.hash.validations = null
+        @current_rule.hash.rule_type = "IceCube::WeeklyRule"
+        @current_rule.str = $.fn.recurring_select.texts["weekly"]
+      @initWeeklyOptions()
       @freq_select.on "change", @freqChanged
 
     initDailyOptions: ->
@@ -300,13 +297,7 @@ window.RecurringSelectDialog =
           <div class='rs_dialog_content'>
             <h1>#{$.fn.recurring_select.texts["repeat"]} <a href='#' title='#{$.fn.recurring_select.texts["cancel"]}' Alt='#{$.fn.recurring_select.texts["cancel"]}'></a> </h1>
             <p>
-              <label for='rs_frequency'>#{$.fn.recurring_select.texts["frequency"]}:</label>
-              <select id='rs_frequency' class='rs_frequency' name='rs_frequency'>
-                <option value='Daily'>#{$.fn.recurring_select.texts["daily"]}</option>
-                <option value='Weekly'>#{$.fn.recurring_select.texts["weekly"]}</option>
-                <option value='Monthly'>#{$.fn.recurring_select.texts["monthly"]}</option>
-                <option value='Yearly'>#{$.fn.recurring_select.texts["yearly"]}</option>
-              </select>
+              <input type='hidden' name='rs_frequency' value='Weekly'
             </p>
 
             <div class='daily_options freq_option_section'>
