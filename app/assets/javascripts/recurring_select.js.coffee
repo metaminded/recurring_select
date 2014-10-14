@@ -39,6 +39,7 @@ methods =
     @.trigger "recurring_select:save"
 
   current_rule: ->
+    @data('initial-value-hash', '{}') if @data('initial-value-hash') is `undefined`
     str:  @data("initial-value-str")
     hash: $.parseJSON(@data("initial-value-hash"))
 
